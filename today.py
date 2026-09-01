@@ -11,7 +11,12 @@ import hashlib
 # Repository permissions: read:Commit statuses, read:Contents, read:Issues, read:Metadata, read:Pull Requests
 # Issues and pull requests permissions not needed at the moment, but may be used in the future
 HEADERS = {'authorization': 'token '+ os.environ['ACCESS_TOKEN']}
-USER_NAME = os.environ['USER_NAME'] # 'Andrew6rant'
+USER_NAME = os.environ['USER_NAME'].strip()  # 'Andrew6rant'
+if not USER_NAME:
+    raise SystemExit(
+        'USER_NAME is empty. Check that the USER_NAME repository secret is set '
+        'to your exact GitHub login (Settings > Secrets and variables > Actions).'
+    )
 QUERY_COUNT = {'user_getter': 0, 'follower_getter': 0, 'graph_repos_stars': 0, 'recursive_loc': 0, 'graph_commits': 0, 'loc_query': 0}
 
 
@@ -46,6 +51,20 @@ def simple_request(func_name, query, variables):
     """
     request = requests.post('https://api.github.com/graphql', json={'query': query, 'variables':variables}, headers=HEADERS)
     if request.status_code == 200:
+        response = request.json()
+        # GitHub's GraphQL API can return HTTP 200 with an 'errors' array and
+        # null data (e.g. bad/expired token, or a login that can't be resolved).
+        # Surface that here instead of crashing later with a cryptic
+        # "'NoneType' object is not subscriptable".
+        if 'errors' in response:
+            raise Exception(func_name, 'returned GraphQL errors:', response['errors'], QUERY_COUNT)
+        if response.get('data', {}).get('user') is None:
+            raise Exception(
+                func_name,
+                f"GraphQL returned no 'user' data for login '{variables.get('login')}'. "
+                'This usually means USER_NAME is wrong/misspelled, or ACCESS_TOKEN is invalid or expired.',
+                QUERY_COUNT,
+            )
         return request
     raise Exception(func_name, ' has failed with a', request.status_code, request.text, QUERY_COUNT)
 
@@ -426,7 +445,6 @@ if __name__ == '__main__':
     # e.g {'id': 'MDQ6VXNlcjU3MzMxMTM0'} and 2019-11-03T21:15:07Z for username 'Andrew6rant'
     user_data, user_time = perf_counter(user_getter, USER_NAME)
     OWNER_ID, acc_date = user_data
-
     formatter('account data', user_time)
     age_data, age_time = perf_counter(daily_readme, datetime.datetime(2004, 5, 31))
     formatter('age calculation', age_time)
