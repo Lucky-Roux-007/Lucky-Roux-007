@@ -54,7 +54,7 @@ text, tspan {white-space: pre;}
 <tspan x="15" y="510">             '¹%@@@@@@@@@*"        </tspan>
 <tspan x="15" y="526">                 ""¹¹""            </tspan>
 </text>
-<text x="390" y="30" fill="#ebd5d8">
+<text x="380" y="30" fill="#ebd5d8">
 <tspan x="390" y="30">root@Lucky-Roux-007</tspan> -————————————————————————————————————-—-
 <tspan x="390" y="50" class="cc">. </tspan><tspan class="key">OS</tspan>:<tspan class="cc"> ............................... </tspan><tspan class="value">Linux / Red Hat / Kali</tspan>
 <tspan x="390" y="70" class="cc">. </tspan><tspan class="key">Uptime</tspan>:<tspan class="cc" id="age_data_dots"> ........................ </tspan><tspan class="value" id="age_data">0 years, 0 months, 0 days</tspan>
