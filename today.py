@@ -304,6 +304,7 @@ def force_close_file(data, cache_comment):
     print('There was an error while writing to the cache file. The file,', filename, 'has had the partial data saved and closed.')
 
 
+
 def stars_counter(data):
     """
     Count total stars in repositories owned by me
