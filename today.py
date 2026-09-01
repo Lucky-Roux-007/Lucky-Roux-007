@@ -426,6 +426,7 @@ if __name__ == '__main__':
     # e.g {'id': 'MDQ6VXNlcjU3MzMxMTM0'} and 2019-11-03T21:15:07Z for username 'Andrew6rant'
     user_data, user_time = perf_counter(user_getter, USER_NAME)
     OWNER_ID, acc_date = user_data
+
     formatter('account data', user_time)
     age_data, age_time = perf_counter(daily_readme, datetime.datetime(2004, 5, 31))
     formatter('age calculation', age_time)
